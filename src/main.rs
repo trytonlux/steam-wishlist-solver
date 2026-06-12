@@ -9,7 +9,7 @@ fn main() {
         22.79, 32.99, 32.99, 9.99, 7.79, 25.99, 21.99, 21.99, 25.99, 14.99, 79.99, 21.99, 22.79,
         25.98, 23.99,
     ];
-    let budget = 100_f64;
+    let budget = 100_f32;
 
     println!("Sorted by lowest price");
     let cheapest = solver::grab_max_items(&wishlist, budget, solver::SortStrategy::Cheapest);
