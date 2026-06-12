@@ -1,36 +1,4 @@
-#[derive(PartialEq, Debug)]
-// Options for sorting wishlist
-enum WishlistSortStrategies {
-    Cheapest,
-    Expensive,
-}
-
-// Finds the most amount of items that fit in a given budget by simply just itterating the list.
-// Supports multiple methods for sorting the list before greedily pulling items.
-fn max_items_greedy(wishlist: &[f64], budget: f64, strategy: WishlistSortStrategies) {
-    let mut sorted_wishlist = wishlist.to_vec();
-    sorted_wishlist.sort_by(f64::total_cmp);
-
-    if strategy == WishlistSortStrategies::Expensive {
-        sorted_wishlist.reverse();
-    }
-
-    let mut total_cost = 0_f64;
-    let mut cart = Vec::<f64>::new();
-
-    for cost in sorted_wishlist {
-        if total_cost + cost <= budget {
-            total_cost += cost;
-            cart.push(cost);
-        } else {
-            break;
-        }
-    }
-
-    println!("Wishlist sorted by {:#?}", strategy);
-    println!("{} items bought for {}", cart.len(), total_cost);
-    println!("Full cart: {:#?}", cart);
-}
+mod solver;
 
 fn main() {
     let wishlist = vec![
@@ -43,6 +11,17 @@ fn main() {
     ];
     let budget = 100_f64;
 
-    max_items_greedy(&wishlist, budget, WishlistSortStrategies::Cheapest);
-    max_items_greedy(&wishlist, budget, WishlistSortStrategies::Expensive);
+    println!("Sorted by lowest price");
+    let cheapest = solver::grab_max_items(&wishlist, budget, solver::SortStrategy::Cheapest);
+
+    println!("{} items for {}", cheapest.items.len(), cheapest.total_cost);
+    println!("Full cart: {:#?}", cheapest.items);
+    println!();
+
+    println!("Sorted by highest price");
+    let expensive = solver::grab_max_items(&wishlist, budget, solver::SortStrategy::Expensive);
+
+    println!("{} items for {}", expensive.items.len(), expensive.total_cost);
+    println!("Full cart: {:#?}", expensive.items);
+    println!();
 }
