@@ -54,7 +54,7 @@ impl Game {
 
 pub fn from_file(path: &Path) -> GameList {
     let file = fs::read_to_string(path).expect("unable to read file");
-    let data: Value = serde_json::from_str(&file).expect("iunable to parse file");
+    let data: Value = serde_json::from_str(&file).expect("unable to parse file");
 
     let data_games = data
         .get("data")
