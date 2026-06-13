@@ -1,5 +1,6 @@
-use std::fmt::Display;
+use std::{fmt::Display, str::FromStr};
 
+use clap::{ValueEnum, builder::PossibleValue};
 use tabled::{
     Table,
     settings::{
@@ -11,11 +12,36 @@ use tabled::{
 
 use crate::wishlist::{Game, GameList};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Clone, Debug)]
 // Options for sorting wishlist
 pub enum SortStrategy {
     Cheapest,
     Expensive,
+}
+
+impl FromStr for SortStrategy {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "cheapest" => Ok(SortStrategy::Cheapest),
+            "expensive" => Ok(SortStrategy::Expensive),
+            _ => Err(()),
+        }
+    }
+}
+
+impl ValueEnum for SortStrategy {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[Self::Cheapest, Self::Expensive]
+    }
+
+    fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
+        match self {
+            SortStrategy::Cheapest => Some(PossibleValue::new("cheapest")),
+            SortStrategy::Expensive => Some(PossibleValue::new("expensive")),
+        }
+    }
 }
 
 pub struct Cart {
@@ -88,6 +114,6 @@ pub fn grab_max_items(
         items: cart,
         total_cost,
         strategy,
-        only_discounts
+        only_discounts,
     }
 }
