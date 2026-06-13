@@ -66,7 +66,7 @@ impl Display for Cart {
         let mut table = Table::new(&self.items);
         table
             .with(Style::modern())
-            .with(Colorization::exact([Color::BOLD], Rows::first()))
+            .with(Colorization::exact([Color::BOLD], Rows::new(0..2)))
             .with(Panel::header(header))
             .with(Panel::footer(format!("Total Cost: {}", &self.total_cost)))
             .with(BorderCorrection::span());
