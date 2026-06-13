@@ -22,6 +22,7 @@ pub struct Cart {
     items: Vec<Game>,
     total_cost: f32,
     strategy: SortStrategy,
+    only_discounts: bool,
 }
 
 impl Display for Cart {
@@ -29,6 +30,11 @@ impl Display for Cart {
         let header = match self.strategy {
             SortStrategy::Cheapest => "Sorted by Lowest Price",
             SortStrategy::Expensive => "Sorted by Highest Price",
+        };
+
+        let header = match self.only_discounts {
+            true => format!("{} (Only Discounts)", header),
+            false => header.to_string(),
         };
 
         let mut table = Table::new(&self.items);
@@ -44,8 +50,21 @@ impl Display for Cart {
 
 // Return maximum list of items that fit within given budget.
 // Supports multiple methods for sorting the list before greedily pulling items.
-pub fn grab_max_items(wishlist: &GameList, budget: f32, strategy: SortStrategy) -> Cart {
-    let mut sorted_wishlist = wishlist.clone();
+pub fn grab_max_items(
+    wishlist: &GameList,
+    budget: f32,
+    strategy: SortStrategy,
+    only_discounts: bool,
+) -> Cart {
+    let mut sorted_wishlist = match only_discounts {
+        true => wishlist
+            .iter()
+            .filter(|game| game.discount != 0)
+            .cloned()
+            .collect(),
+        false => wishlist.clone(),
+    };
+
     sorted_wishlist.sort_by(|a, b| a.price.total_cmp(&b.price));
 
     if strategy == SortStrategy::Expensive {
@@ -69,5 +88,6 @@ pub fn grab_max_items(wishlist: &GameList, budget: f32, strategy: SortStrategy) 
         items: cart,
         total_cost,
         strategy,
+        only_discounts
     }
 }
