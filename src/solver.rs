@@ -13,7 +13,7 @@ use tabled::{
 use crate::wishlist::{Game, GameList};
 
 #[derive(PartialEq, Clone, Debug)]
-// Options for sorting wishlist
+/// Options for sorting wishlist
 pub enum SortStrategy {
     Cheapest,
     Expensive,
@@ -74,8 +74,8 @@ impl Display for Cart {
     }
 }
 
-// Return maximum list of items that fit within given budget.
-// Supports multiple methods for sorting the list before greedily pulling items.
+/// Return maximum list of items that fit within given budget.
+/// Supports multiple methods for sorting the list before greedily pulling items.
 pub fn grab_max_items(
     wishlist: &GameList,
     budget: f32,
