@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, process::exit};
 
 use crate::solver::SortStrategy;
 
@@ -46,6 +46,7 @@ fn main() {
 
     if let Some(shell) = args.completions {
         generate_completions(shell, &mut Cli::command());
+        exit(0)
     }
 
     let wishlist = wishlist::from_file(&args.wishlist_file);
