@@ -1,6 +1,6 @@
 [package]
 name = "steam-wishlist-solver"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 description = "Get possible lists of games to buy with a given budget from an AugmentedSteam wishlist export."
 repository = "https://github.com/trytonlux/steam-wishlist-solver"
