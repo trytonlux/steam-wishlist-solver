@@ -11,6 +11,7 @@ pub type GameList = Vec<Game>;
 #[derive(Debug, Clone, Tabled)]
 #[tabled(rename_all = "Upper Title Case")]
 pub struct Game {
+    #[tabled(format("\u{1b}]8;;https://store.steampowered.com/app/{}\u{1b}\\{}\u{1b}]8;;\u{1b}\\", self.appid, self.appid))]
     pub appid: String,
     pub name: String,
     #[tabled(format("${}", self.price))]

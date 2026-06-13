@@ -13,7 +13,7 @@ clap = { version = "4.6", features = ["derive"] }
 clap_complete = "4.6"
 serde = { version = "1.0" }
 serde_json = "1.0"
-tabled = "0.21"
+tabled = {version = "0.21", features = ["default", "ansi"]}
 
 [profile.release]
 strip = true
