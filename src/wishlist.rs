@@ -4,14 +4,18 @@ use std::{
 };
 
 use serde_json::{Map, Value};
+use tabled::Tabled;
 
 pub type GameList = Vec<Game>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Tabled)]
+#[tabled(rename_all = "Upper Title Case")]
 pub struct Game {
     pub appid: String,
     pub name: String,
+    #[tabled(format("${}", self.price))]
     pub price: f32,
+    #[tabled(format("{}%", self.discount))]
     pub discount: i64,
 }
 
