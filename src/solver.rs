@@ -1,6 +1,7 @@
 use std::{fmt::Display, str::FromStr};
 
 use clap::{ValueEnum, builder::PossibleValue};
+use rand::seq::SliceRandom;
 use tabled::{
     Table,
     settings::{
@@ -17,6 +18,7 @@ use crate::wishlist::{Game, GameList};
 pub enum SortStrategy {
     Cheapest,
     Expensive,
+    Random,
 }
 
 impl FromStr for SortStrategy {
@@ -26,6 +28,7 @@ impl FromStr for SortStrategy {
         match s {
             "cheapest" => Ok(SortStrategy::Cheapest),
             "expensive" => Ok(SortStrategy::Expensive),
+            "random" => Ok(SortStrategy::Random),
             _ => Err(()),
         }
     }
@@ -33,13 +36,14 @@ impl FromStr for SortStrategy {
 
 impl ValueEnum for SortStrategy {
     fn value_variants<'a>() -> &'a [Self] {
-        &[Self::Cheapest, Self::Expensive]
+        &[Self::Cheapest, Self::Expensive, Self::Random]
     }
 
     fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
         match self {
             SortStrategy::Cheapest => Some(PossibleValue::new("cheapest")),
             SortStrategy::Expensive => Some(PossibleValue::new("expensive")),
+            SortStrategy::Random => Some(PossibleValue::new("random")),
         }
     }
 }
@@ -56,6 +60,7 @@ impl Display for Cart {
         let header = match self.strategy {
             SortStrategy::Cheapest => "Sorted by Lowest Price",
             SortStrategy::Expensive => "Sorted by Highest Price",
+            SortStrategy::Random => "Sorted Randomly",
         };
 
         let header = match self.only_discounts {
@@ -91,10 +96,15 @@ pub fn grab_max_items(
         false => wishlist.clone(),
     };
 
-    sorted_wishlist.sort_by(|a, b| a.price.total_cmp(&b.price));
+    if strategy == SortStrategy::Random {
+        let mut rng = rand::rng();
+        sorted_wishlist.shuffle(&mut rng);
+    } else {
+        sorted_wishlist.sort_by(|a, b| a.price.total_cmp(&b.price));
 
-    if strategy == SortStrategy::Expensive {
-        sorted_wishlist.reverse();
+        if strategy == SortStrategy::Expensive {
+            sorted_wishlist.reverse();
+        }
     }
 
     let mut total_cost = 0_f32;
